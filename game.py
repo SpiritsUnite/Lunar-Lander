@@ -3,39 +3,54 @@ from pygame.locals import *
 
 import ship
 
-pygame.init()
+class Game:
+    def __init__(self, screen):
+        # background
+        self.bg = pygame.Surface((screen.get_width(), screen.get_height()))
+        self.bg = self.bg.convert()
+        self.bg.fill((0, 0, 0,))
 
-screen = pygame.display.set_mode((1024, 768))
-pygame.display.set_caption('Lunar Lander')
+        self.screen = screen
 
-bg = pygame.Surface((screen.get_width(), screen.get_height())).convert()
-bg.fill((0, 0, 0,))
-screen.blit(bg, (0, 0))
+        # create lander
+        self.lander = ship.Ship(self, (screen.get_width()/2, screen.get_height()/2))
 
-shipSprite = ship.Ship((screen.get_height() / 2, screen.get_width() / 2))
-screen.blit(shipSprite.image, shipSprite.rect)
+    def update(self, keys):
+        self.screen.blit(self.bg, (0, 0))
 
-pygame.display.update()
-
-clock = pygame.time.Clock()
-
-exited = False
-while not exited:
-    # what's changed from one frame to another
-    #delta = []
-    screen.blit(bg, (0, 0))
-
-    shipSprite.update()
-    screen.blit(shipSprite.image, shipSprite.rect)
-
-    pygame.display.update()
-    clock.tick(30)
+        self.lander.update(keys)
+        
+        self.screen.blit(self.lander.get_surface(), self.lander.get_rect((0, screen.get_height())))
 
 
-    for event in pygame.event.get():
-        if event.type == QUIT:
-            exited = True
-        elif event.type == KEYDOWN and event.key in (K_ESCAPE, K_q):
-            exited = True
+if __name__ == "__main__":
+    # initialise pygame
+    pygame.init()
+    print "initialised pygame"
+
+    # create screen
+    screen = pygame.display.set_mode((1024, 768))
+    pygame.display.set_caption('Lunar Lander')
+    print "created screen"
+
+    clock = pygame.time.Clock() 
+
+    game = Game(screen)
+    print "initialised game"
+
+    exited = False
+    while not exited:
+        keys = pygame.key.get_pressed()
+
+        game.update(keys)
+        pygame.display.update()
+        clock.tick(30)
+
+
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                exited = True
+            elif event.type == KEYDOWN and event.key in (K_ESCAPE, K_q):
+                exited = True
 
 pygame.quit()
