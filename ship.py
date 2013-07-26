@@ -15,6 +15,11 @@ class Ship(pygame.sprite.Sprite):
         self.rot = 0
         self.vx = 0
         self.vy = 0
+
+        self.landed = False
+
+    def set_pos(self, pos):
+        self.x, self.y = map(float, pos)
     
     def thrust(self, v):
         self.vx += math.sin(math.radians(self.rot)) * v
@@ -29,10 +34,10 @@ class Ship(pygame.sprite.Sprite):
         # check keys
         if keys[K_UP]:
             self.thrust(.5)
-        elif keys[K_RIGHT]:
-            self.rot += 5
-        elif keys[K_LEFT]:
-            self.rot -= 5
+        if keys[K_RIGHT]:
+            self.rot += 3
+        if keys[K_LEFT]:
+            self.rot -= 3
 
         self.rot %= 360
 
@@ -52,14 +57,27 @@ class Ship(pygame.sprite.Sprite):
 
         # did we hit the ground?
         if self.y - self.image.get_height() / 2 < 0:
+            # is it a landing?
+            if not self.landed:
+                # check for successful landing
+                if abs(self.vy) < 2 and (self.rot + 20) % 360 < 40:
+                    print "YAYAYYAY"
+                    self.rot = 0
+                else:
+                    print "CRASHED!!"
+
             self.y = self.image.get_height() / 2
             self.vy = 0
+            self.landed = True
+        else:
+            self.landed = False
+
 
         # sides?
         
 
         #print self.x, self.y
-        print self.rot
+        #print self.rot
 
     def get_surface(self):
         return pygame.transform.rotate(self.image, -self.rot)

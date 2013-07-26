@@ -13,30 +13,28 @@ class Game:
         self.screen = screen
 
         # create lander
-        self.lander = ship.Ship(self, (screen.get_width()/2, screen.get_height()/2))
+        self.lander = ship.Ship(self, (screen.get_width()/2, screen.get_height() - 20))
 
     def update(self, keys):
         self.screen.blit(self.bg, (0, 0))
 
         self.lander.update(keys)
         
-        self.screen.blit(self.lander.get_surface(), self.lander.get_rect((0, screen.get_height())))
+        self.screen.blit(self.lander.get_surface(),\
+                self.lander.get_rect((0, screen.get_height())))
 
 
 if __name__ == "__main__":
     # initialise pygame
     pygame.init()
-    print "initialised pygame"
 
     # create screen
-    screen = pygame.display.set_mode((1024, 768))
+    screen = pygame.display.set_mode((640, 480))
     pygame.display.set_caption('Lunar Lander')
-    print "created screen"
 
     clock = pygame.time.Clock() 
 
     game = Game(screen)
-    print "initialised game"
 
     exited = False
     while not exited:
