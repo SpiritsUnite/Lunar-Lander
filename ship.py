@@ -6,13 +6,14 @@ import math
 import loader
 
 class Ship(pygame.sprite.Sprite):
-    def __init__(self, game, pos = (0, 0)):
+    def __init__(self, game, origin):
         super(Ship, self).__init__()
 
         self.image = pygame.Surface((20, 40)).convert_alpha()
         self.image.fill((255, 0, 0))
 
-        self.x, self.y = map(float, pos)
+        self.x, self.y = (0, 0)
+        self.origin = origin
 
         self.rot = 0
         self.vx = 0
@@ -30,13 +31,14 @@ class Ship(pygame.sprite.Sprite):
         self.vx += math.sin(math.radians(self.rot)) * v
         self.vy += math.cos(math.radians(self.rot)) * v
 
-    def update(self, keys):
+    def update(self):
         # apply forces to velocity
 
         # apply gravity
         self.vy += -self.get_mass() * 0.00001
 
         # check keys
+        keys = pygame.key.get_pressed()
         if keys[K_UP]:
             if self.fuel > 0:
                 self.thrust(.5)
@@ -63,7 +65,7 @@ class Ship(pygame.sprite.Sprite):
         self.y += self.vy
 
         # did we hit the ground?
-        if self.y - self.image.get_height() / 2 < 0:
+        if self.y < 0:
             # is it a landing?
             if not self.landed:
                 # check for successful landing
@@ -73,7 +75,7 @@ class Ship(pygame.sprite.Sprite):
                 else:
                     print "CRASHED!!"
 
-            self.y = self.image.get_height() / 2
+            self.y = 0
             self.vy = 0
             self.vx = 0
             self.landed = True
@@ -90,9 +92,9 @@ class Ship(pygame.sprite.Sprite):
     def get_surface(self):
         return pygame.transform.rotate(self.image, -self.rot)
 
-    def get_rect(self, origin):
+    def get_rect(self):
         rect = self.get_surface().get_rect()
-        rect.center = (origin[0] + self.x, origin[1] - self.y)
+        rect.midbottom = (self.origin[0] + self.x, self.origin[1] - self.y)
         #print rect.center
 
         return rect
