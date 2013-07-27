@@ -45,4 +45,7 @@ def load_font(name, size):
         raise SystemExit, message
 
     return font
+
+def load_sys_font(name, size):
+    return pygame.font.SysFont(name, size)
     
