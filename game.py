@@ -2,6 +2,8 @@ import pygame
 from pygame.locals import *
 
 import ship
+import loader
+
 
 class Game:
     def __init__(self, screen):
@@ -15,21 +17,27 @@ class Game:
         # create lander
         self.lander = ship.Ship(self, (screen.get_width()/2, screen.get_height() - 20))
 
-    def update(self, keys):
+    def display(self, keys):
         self.screen.blit(self.bg, (0, 0))
 
         self.lander.update(keys)
         
         self.screen.blit(self.lander.get_surface(),\
                 self.lander.get_rect((0, screen.get_height())))
+        self.screen.blit(font.render(str(self.lander.fuel), True, (255,255,255)),\
+                font.render(str(self.lander.fuel), True, (255,255,255)).get_rect())
+
+        pygame.display.update()
+        
 
 
 if __name__ == "__main__":
     # initialise pygame
     pygame.init()
+    font = loader.load_sys_font("ubuntu", 20);
 
     # create screen
-    screen = pygame.display.set_mode((640, 480))
+    screen = pygame.display.set_mode((1280, 720))
     pygame.display.set_caption('Lunar Lander')
 
     clock = pygame.time.Clock() 
@@ -40,8 +48,7 @@ if __name__ == "__main__":
     while not exited:
         keys = pygame.key.get_pressed()
 
-        game.update(keys)
-        pygame.display.update()
+        game.display(keys)
         clock.tick(30)
 
 

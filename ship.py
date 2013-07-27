@@ -3,9 +3,11 @@ from pygame.locals import *
 
 import math
 
+import loader
+
 class Ship(pygame.sprite.Sprite):
     def __init__(self, game, pos = (0, 0)):
-        pygame.sprite.Sprite.__init__(self)
+        super(Ship, self).__init__()
 
         self.image = pygame.Surface((20, 40)).convert_alpha()
         self.image.fill((255, 0, 0))
@@ -52,7 +54,7 @@ class Ship(pygame.sprite.Sprite):
 
         if abs(self.vx) < .1:
             self.vx = 0
-        if abs(self.vy) < .1:
+        if abs(self.vy) < .05:
             self.vy = 0
 
 
@@ -65,7 +67,7 @@ class Ship(pygame.sprite.Sprite):
             # is it a landing?
             if not self.landed:
                 # check for successful landing
-                if self.vx**2 + self.vy**2 < 2 and (self.rot + 20) % 360 < 40:
+                if self.vx**2 + self.vy**2 < 4 and (self.rot + 20) % 360 < 40:
                     print "YAYAYYAY"
                     self.rot = 0
                 else:
