@@ -50,10 +50,10 @@ class Ship(pygame.sprite.Sprite):
         self.vx *= 0.99
         self.vy *= 0.99
 
-        #if abs(self.vx) < .09:
-        #    self.vx = 0
-        #if abs(self.vy) < .09:
-        #    self.vy = 0
+        if abs(self.vx) < .1:
+            self.vx = 0
+        if abs(self.vy) < .1:
+            self.vy = 0
 
 
         # move rect
@@ -65,7 +65,7 @@ class Ship(pygame.sprite.Sprite):
             # is it a landing?
             if not self.landed:
                 # check for successful landing
-                if abs(self.vy) < 2 and (self.rot + 20) % 360 < 40:
+                if self.vx**2 + self.vy**2 < 2 and (self.rot + 20) % 360 < 40:
                     print "YAYAYYAY"
                     self.rot = 0
                 else:
