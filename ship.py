@@ -16,6 +16,9 @@ class Ship(pygame.sprite.Sprite):
         self.vx = 0
         self.vy = 0
 
+        self.mass = 10000
+        self.fuel = 6000
+
         self.landed = False
 
     def set_pos(self, pos):
@@ -29,15 +32,17 @@ class Ship(pygame.sprite.Sprite):
         # apply forces to velocity
 
         # apply gravity
-        self.vy += -.1
+        self.vy += -self.get_mass() * 0.00001
 
         # check keys
         if keys[K_UP]:
-            self.thrust(.5)
+            if self.fuel > 0:
+                self.thrust(.5)
+                self.fuel -= 10
         if keys[K_RIGHT]:
-            self.rot += 3
+            self.rot += 7
         if keys[K_LEFT]:
-            self.rot -= 3
+            self.rot -= 7
 
         self.rot %= 360
 
@@ -45,10 +50,10 @@ class Ship(pygame.sprite.Sprite):
         self.vx *= 0.99
         self.vy *= 0.99
 
-        if abs(self.vx) < .09:
-            self.vx = 0
-        if abs(self.vy) < .09:
-            self.vy = 0
+        #if abs(self.vx) < .09:
+        #    self.vx = 0
+        #if abs(self.vy) < .09:
+        #    self.vy = 0
 
 
         # move rect
@@ -68,6 +73,7 @@ class Ship(pygame.sprite.Sprite):
 
             self.y = self.image.get_height() / 2
             self.vy = 0
+            self.vx = 0
             self.landed = True
         else:
             self.landed = False
@@ -88,4 +94,7 @@ class Ship(pygame.sprite.Sprite):
         #print rect.center
 
         return rect
+
+    def get_mass(self):
+        return self.mass + self.fuel * 1.443
 
