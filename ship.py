@@ -94,7 +94,7 @@ class Ship(pygame.sprite.Sprite):
 
         ml, mr = 0, 0
         xl, xr = 0, 0
-        for i in xrange(l, l + 10):
+        for i in xrange(l, l + 12):
             if i < 0:
                 ml = -1
                 xl = -1
@@ -108,7 +108,7 @@ class Ship(pygame.sprite.Sprite):
                 xl = -1
                 break
 
-        for i in xrange(r - 10, r):
+        for i in xrange(r - 12, r):
             try:
                 if self.game.ter[i] > mr:
                     mr = self.game.ter[i]
@@ -150,6 +150,7 @@ class Ship(pygame.sprite.Sprite):
                         self.landed.append("Too fast!")
                     if abs(self.rot - ro) >= 10:
                         self.landed.append("Rotation not good enough!")
+                        self.landed.append("Should be no more than 10 degrees of %lf" % ro)
 
             # reverse movements
             #self.y = self.get_rect().height/2 + max(mr, ml)
