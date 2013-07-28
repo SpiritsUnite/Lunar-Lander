@@ -53,4 +53,10 @@ class AltStatus(TextStatus):
         self.image = self.font.render(text, True, (255,255,255))
         super(AltStatus, self).update()
 
+class RotStatus(TextStatus):
+    def update(self):
+        text = "Rotation: %d" % (self.lander.rot % 360)
+        self.image = self.font.render(text, True, (255,255,255))
+        super(RotStatus, self).update()
+
 

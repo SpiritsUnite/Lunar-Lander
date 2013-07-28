@@ -19,7 +19,7 @@ class Game:
         # terrain
         minh, h, maxh = 30, 100.0, 170
         ter = pygame.Surface((screen.get_width(), maxh + 30)).convert_alpha()
-        ter.fill((0, 255, 0))
+        ter.fill((150, 150, 150))
         terArr = pygame.surfarray.pixels_alpha(ter)
         self.ter = []
         for i in xrange(screen.get_width()):
@@ -34,9 +34,10 @@ class Game:
                     terArr[i][j] = (j - nh + 1) * 255 / (h - nh + 1)
                 if ph <= j < h:
                     terArr[i][j] = (j - ph + 1) * 255 / (h - ph + 1)
+            for j in xrange(int(h), maxh + 30):
+                terArr[i][j] = random.randint(150, 255)
             self.ter.append(maxh - int(h))
             h = nh
-        print self.ter
         terArr = None
         self.bg.blit(ter, (0, screen.get_height() - maxh - 30))
 
@@ -56,12 +57,15 @@ class Game:
         self.statuses.add(status.VelStatus((0, 20), self.lander, "Ubuntu", 20))
         self.statuses.add(status.PosStatus((0, 40), self.lander, "Ubuntu", 20))
         self.statuses.add(status.AltStatus((0, 60), self.lander, "Ubuntu", 20))
+        self.statuses.add(status.RotStatus((0, 80), self.lander, "Ubuntu", 20))
         pygame.display.update()
 
     def display(self):
         # Clear previous frame
-        rects = [self.screen.blit(self.bg, self.lander.get_rect(),
-                self.lander.get_rect())]
+        rects = [self.screen.blit(self.bg, self.lander.get_rect(), self.lander.get_rect())]
+        if self.lander.fire:
+            rects.append(self.screen.blit(self.bg, self.lander.get_fire_rect(),
+                self.lander.get_fire_rect()))
         self.statuses.clear(self.screen, self.bg)
 
         # Update
@@ -70,10 +74,14 @@ class Game:
         
         rects.append(self.screen.blit(self.lander.get_surface(),
             self.lander.get_rect()))
+        if self.lander.fire:
+            rects.append(self.screen.blit(self.lander.get_fire(), self.lander.get_fire_rect()))
         rects.extend(self.statuses.draw(screen))
 
         # display
         pygame.display.update(rects)
+
+        return self.lander.landed
         
 
 
@@ -90,9 +98,11 @@ if __name__ == "__main__":
     game = Game(screen)
 
     exited = False
+    exitMsg = None
     while not exited:
 
-        game.display()
+        exited = game.display()
+        exitMsg = exited
         clock.tick(30)
 
 
@@ -102,4 +112,7 @@ if __name__ == "__main__":
             elif event.type == KEYDOWN and event.key in (K_ESCAPE, K_q):
                 exited = True
 
+if exitMsg:
+    for s in exitMsg:
+        print s
 pygame.quit()
